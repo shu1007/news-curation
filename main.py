@@ -90,6 +90,42 @@ def parse_published(entry) -> datetime | None:
     return None
 
 
+def extract_image_from_entry(entry) -> str:
+    """Extract image URL from RSS entry fields."""
+    # hatena_imageurl (はてなブックマーク)
+    hatena_img = entry.get("hatena_imageurl", "")
+    if hatena_img:
+        return hatena_img
+
+    # media_content
+    media = entry.get("media_content", [])
+    if media:
+        for m in media:
+            if m.get("medium") == "image" or (m.get("type", "").startswith("image")):
+                return m.get("url", "")
+        if media[0].get("url"):
+            return media[0]["url"]
+
+    # media_thumbnail
+    media_thumb = entry.get("media_thumbnail", [])
+    if media_thumb and media_thumb[0].get("url"):
+        return media_thumb[0]["url"]
+
+    # enclosure with image type
+    for enc in entry.get("enclosures", []):
+        if enc.get("type", "").startswith("image"):
+            return enc.get("href", "")
+
+    # <img> tag in summary/description
+    summary_html = entry.get("summary", entry.get("description", ""))
+    if summary_html:
+        imgs = re.findall(r'<img[^>]+src=["\']([^"\']+)["\']', summary_html)
+        if imgs:
+            return imgs[0]
+
+    return ""
+
+
 def fetch_feed_articles(feed: dict, cutoff: datetime) -> list[dict]:
     """Fetch articles from a single feed, filtering by cutoff date."""
     logging.info(f"  Fetching: {feed['name']} ({feed['url']})")
@@ -113,6 +149,8 @@ def fetch_feed_articles(feed: dict, cutoff: datetime) -> list[dict]:
         # Strip HTML tags from description
         description = re.sub(r"<[^>]+>", "", description).strip()
 
+        image_url = extract_image_from_entry(entry)
+
         articles.append(
             {
                 "feed_name": feed["name"],
@@ -123,6 +161,7 @@ def fetch_feed_articles(feed: dict, cutoff: datetime) -> list[dict]:
                 "summary": "",
                 "description": description[:1000],
                 "is_english": not is_japanese(title),
+                "image_url": image_url,
             }
         )
 
@@ -137,16 +176,26 @@ _REQUEST_HEADERS = {
 }
 
 
-def fetch_article_content(url: str) -> str:
-    """Fetch article URL and extract main text content from HTML."""
+def fetch_article_content(url: str) -> tuple[str, str]:
+    """Fetch article URL and extract main text content and og:image from HTML.
+
+    Returns:
+        (text_content, og_image_url)
+    """
     try:
         resp = requests.get(url, headers=_REQUEST_HEADERS, timeout=15)
         resp.raise_for_status()
     except Exception as e:
         logging.info(f"    -> 本文取得: 失敗({e.__class__.__name__})")
-        return ""
+        return "", ""
 
     soup = BeautifulSoup(resp.content, "html.parser")
+
+    # Extract og:image before decomposing elements
+    og_image = ""
+    og_tag = soup.find("meta", property="og:image")
+    if og_tag and og_tag.get("content"):
+        og_image = og_tag["content"]
 
     # Remove non-content elements
     for tag in soup.select("script, style, nav, header, footer, aside, form, iframe, noscript"):
@@ -166,7 +215,7 @@ def fetch_article_content(url: str) -> str:
     # Collapse excessive whitespace
     text = re.sub(r"\n{3,}", "\n\n", text)
 
-    return text[:CONTENT_MAX_CHARS]
+    return text[:CONTENT_MAX_CHARS], og_image
 
 
 def call_ollama(prompt: str) -> str:
@@ -257,12 +306,21 @@ def process_articles(new_articles: list[dict], existing_articles: list[dict]) ->
         logging.info(f"  [{i}/{total}] [{label}] {article['title'][:60]}")
 
         # Fetch full article content from HTML
-        content = fetch_article_content(article["url"])
+        content, og_image = fetch_article_content(article["url"])
         if content:
             article["description"] = content
             logging.info(f"    -> 本文取得: OK ({len(content)}字)")
         else:
             logging.info(f"    -> 本文取得: フォールバック(RSS概要を使用)")
+
+        # Use og:image as fallback if no RSS image
+        if not article.get("image_url") and og_image:
+            article["image_url"] = og_image
+            logging.info(f"    -> 画像: og:image取得")
+        elif article.get("image_url"):
+            logging.info(f"    -> 画像: RSS取得")
+        else:
+            logging.info(f"    -> 画像: なし")
 
         # Summarize
         summary = summarize_article(article)
