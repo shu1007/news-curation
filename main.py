@@ -25,7 +25,6 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 OLLAMA_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL = "gemma3:4b"
 RETENTION_DAYS = 7
-SUMMARY_MAX_CHARS = 200
 LOG_DIR = BASE_DIR / "logs"
 
 
@@ -195,10 +194,37 @@ def summarize_article(article: dict) -> str:
     content = f"タイトル: {title}\n内容: {desc}" if desc else f"タイトル: {title}"
 
     prompt = (
-        "以下の記事を日本語で約200字に要約してください。文字数は目標で多少の誤差は許容するので途中までで切ることはしないで下さい。また要約のみを出力してください。\n\n"
+        "以下の記事を日本語で要約してください。\n"
+        "制約:\n"
+        "- 100〜200字程度\n"
+        "- 必ず文末を「。」で終えること\n"
+        "- 要約のみを出力（前置きや補足は不要）\n\n"
         f"{content}"
     )
     return call_ollama(prompt)
+
+
+def generate_labels(article: dict) -> list[str]:
+    """Generate 2-3 labels for an article using Ollama."""
+    title = article["title"]
+    summary = article.get("summary", "")
+    prompt = (
+        "以下の記事にふさわしいラベルを2〜3個生成してください。\n"
+        "制約:\n"
+        "- 英語の小文字で出力（例: programming, rust, apple）\n"
+        "- カンマ区切りで出力（例: ai, programming, python）\n"
+        "- 汎用的なカテゴリ（例: programming, tech, security, devops）と、\n"
+        "  記事固有のトピック（例: rust, iphone, aws, docker）を混ぜること\n"
+        "- ラベルのみを出力（前置きや説明は不要）\n\n"
+        f"タイトル: {title}\n要約: {summary}"
+    )
+    result = call_ollama(prompt)
+    if not result:
+        return []
+    # Parse comma-separated labels, clean up
+    labels = [l.strip().lower().strip('"\'') for l in result.split(",")]
+    labels = [l for l in labels if l and len(l) < 30 and " " not in l.strip()]
+    return labels[:3]
 
 
 def translate_to_japanese(text: str) -> str:
@@ -240,7 +266,7 @@ def process_articles(new_articles: list[dict], existing_articles: list[dict]) ->
 
         # Summarize
         summary = summarize_article(article)
-        article["summary"] = summary[:SUMMARY_MAX_CHARS] if summary else ""
+        article["summary"] = summary
         if summary:
             logging.info(f"    -> 要約: OK ({len(article['summary'])}字)")
         else:
@@ -256,6 +282,14 @@ def process_articles(new_articles: list[dict], existing_articles: list[dict]) ->
                 logging.info(f"    -> 翻訳: スキップ")
         else:
             article["title_ja"] = article["title"]
+
+        # Generate labels
+        labels = generate_labels(article)
+        article["labels"] = labels
+        if labels:
+            logging.info(f"    -> ラベル: {', '.join(labels)}")
+        else:
+            logging.info(f"    -> ラベル: スキップ")
 
         processed.append(article)
 
@@ -296,10 +330,23 @@ def render_html(articles: list[dict]) -> None:
     env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)), autoescape=True)
     template = env.get_template("index.html.j2")
 
+    # Collect unique feed names (in order of appearance) and labels (by frequency)
+    seen_feeds = []
+    label_count: dict[str, int] = {}
+    for a in sorted_articles:
+        fn = a.get("feed_name", "")
+        if fn and fn not in seen_feeds:
+            seen_feeds.append(fn)
+        for l in a.get("labels", []):
+            label_count[l] = label_count.get(l, 0) + 1
+    all_labels = sorted(label_count.keys(), key=lambda l: -label_count[l])
+
     html = template.render(
         articles=sorted_articles,
         updated_at=datetime.now(tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         total_count=len(sorted_articles),
+        feed_names=seen_feeds,
+        all_labels=all_labels,
     )
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
