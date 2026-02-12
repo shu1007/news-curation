@@ -10,7 +10,7 @@
   <header class="bg-white shadow-sm border-b border-gray-200">
     <div class="max-w-4xl mx-auto px-4 py-6">
       <h1 class="text-2xl font-bold text-gray-900">RSS Feed Aggregator</h1>
-      <p class="mt-1 text-sm text-gray-500">最終更新: 2026-02-12 12:26 UTC / 記事数: <span id="visible-count">444</span> / 444</p>
+      <p class="mt-1 text-sm text-gray-500">最終更新: 2026-02-12 12:31 UTC / 記事数: <span id="visible-count">447</span> / 447</p>
     </div>
   </header>
 
@@ -28,19 +28,24 @@
             All
           </button>
           
-          <button onclick="filterByFeed('DEV Community')" data-feed-btn="DEV Community"
-            class="filter-feed-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer mr-1 mb-1">
-            DEV Community
-          </button>
-          
           <button onclick="filterByFeed('Techmeme')" data-feed-btn="Techmeme"
             class="filter-feed-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer mr-1 mb-1">
             Techmeme
           </button>
           
+          <button onclick="filterByFeed('DEV Community')" data-feed-btn="DEV Community"
+            class="filter-feed-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer mr-1 mb-1">
+            DEV Community
+          </button>
+          
           <button onclick="filterByFeed('Lobsters')" data-feed-btn="Lobsters"
             class="filter-feed-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer mr-1 mb-1">
             Lobsters
+          </button>
+          
+          <button onclick="filterByFeed('Ars Technica')" data-feed-btn="Ars Technica"
+            class="filter-feed-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer mr-1 mb-1">
+            Ars Technica
           </button>
           
           <button onclick="filterByFeed('GIGAZINE')" data-feed-btn="GIGAZINE"
@@ -71,11 +76,6 @@
           <button onclick="filterByFeed('Zenn')" data-feed-btn="Zenn"
             class="filter-feed-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer mr-1 mb-1">
             Zenn
-          </button>
-          
-          <button onclick="filterByFeed('Ars Technica')" data-feed-btn="Ars Technica"
-            class="filter-feed-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer mr-1 mb-1">
-            Ars Technica
           </button>
           
           <button onclick="filterByFeed('LWN.net')" data-feed-btn="LWN.net"
@@ -166,6 +166,16 @@
             development
           </button>
           
+          <button onclick="filterByLabel('ethics')" data-label-btn="ethics"
+            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
+            ethics
+          </button>
+          
+          <button onclick="filterByLabel('chrome')" data-label-btn="chrome"
+            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
+            chrome
+          </button>
+          
           <button onclick="filterByLabel('finance')" data-label-btn="finance"
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
             finance
@@ -191,9 +201,19 @@
             kernel
           </button>
           
+          <button onclick="filterByLabel('politics')" data-label-btn="politics"
+            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
+            politics
+          </button>
+          
           <button onclick="filterByLabel('cryptography')" data-label-btn="cryptography"
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
             cryptography
+          </button>
+          
+          <button onclick="filterByLabel('llm')" data-label-btn="llm"
+            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
+            llm
           </button>
           
           <button onclick="filterByLabel('robotics')" data-label-btn="robotics"
@@ -211,19 +231,9 @@
             fintech
           </button>
           
-          <button onclick="filterByLabel('ethics')" data-label-btn="ethics"
-            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
-            ethics
-          </button>
-          
           <button onclick="filterByLabel('china')" data-label-btn="china"
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
             china
-          </button>
-          
-          <button onclick="filterByLabel('chrome')" data-label-btn="chrome"
-            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
-            chrome
           </button>
           
           <button onclick="filterByLabel('iphone')" data-label-btn="iphone"
@@ -244,11 +254,6 @@
           <button onclick="filterByLabel('marketing')" data-label-btn="marketing"
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
             marketing
-          </button>
-          
-          <button onclick="filterByLabel('llm')" data-label-btn="llm"
-            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
-            llm
           </button>
           
           <button onclick="filterByLabel('aws')" data-label-btn="aws"
@@ -284,11 +289,6 @@
           <button onclick="filterByLabel('gaming')" data-label-btn="gaming"
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
             gaming
-          </button>
-          
-          <button onclick="filterByLabel('politics')" data-label-btn="politics"
-            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
-            politics
           </button>
           
           <button onclick="filterByLabel('japan')" data-label-btn="japan"
@@ -334,6 +334,11 @@
           <button onclick="filterByLabel('react')" data-label-btn="react"
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
             react
+          </button>
+          
+          <button onclick="filterByLabel('coding')" data-label-btn="coding"
+            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
+            coding
           </button>
           
           <button onclick="filterByLabel('git')" data-label-btn="git"
@@ -579,6 +584,16 @@
           <button onclick="filterByLabel('otp')" data-label-btn="otp"
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
             otp
+          </button>
+          
+          <button onclick="filterByLabel('parallelization')" data-label-btn="parallelization"
+            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
+            parallelization
+          </button>
+          
+          <button onclick="filterByLabel('rentahuman')" data-label-btn="rentahuman"
+            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
+            rentahuman
           </button>
           
           <button onclick="filterByLabel('compliance')" data-label-btn="compliance"
@@ -1816,11 +1831,6 @@
             hooks
           </button>
           
-          <button onclick="filterByLabel('coding')" data-label-btn="coding"
-            class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
-            coding
-          </button>
-          
           <button onclick="filterByLabel('frontend')" data-label-btn="frontend"
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
             frontend
@@ -1913,6 +1923,68 @@
 
   <main class="max-w-4xl mx-auto px-4 py-8">
     <div class="space-y-4" id="articles">
+      
+      <article class="article-card bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow"
+        data-feed="Techmeme"
+        data-labels="ai,ethics,politics">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span onclick="filterByFeed('Techmeme')"
+                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 whitespace-nowrap cursor-pointer hover:bg-blue-200">
+                Techmeme
+              </span>
+              
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                EN→JA
+              </span>
+              
+              <time class="text-xs text-gray-400 whitespace-nowrap" datetime="2026-02-12T03:30:01+00:00">
+                2026-02-12
+              </time>
+            </div>
+            <h2 class="text-base font-semibold text-gray-900">
+              <a href="http://www.techmeme.com/260212/p23#a260212p23" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600 hover:underline">
+                
+                  アンソスチックが、OpenAIを支援するスーパーPACに反対するAIの安全対策と透明性を求める動きを推進する団体、Public Firstに2000万ドルを寄付しました。これは、アメリカの中間選挙前に発表されました。（Theodore Schleifer/New York Times）
+                
+              </a>
+            </h2>
+            
+            <p class="text-xs text-gray-400 mt-0.5">Anthropic donates $20M to Public First, a super PAC pushing for AI guardrails and transparency in opposition to OpenAI-backed PACs, ahead of the US midterms (Theodore Schleifer/New York Times)</p>
+            
+            
+            <div class="mt-2 -mx-5">
+              <img src="http://www.techmeme.com/260212/i23.jpg" alt="" class="w-full h-48 object-cover" loading="lazy"
+                onerror="this.parentElement.style.display='none'">
+            </div>
+            
+            
+            <p class="mt-2 text-sm text-gray-600 leading-relaxed">Anthropic, the AI firm behind Claude, has donated $20 million to Public First, a Super PAC focused on promoting AI safety and transparency, particularly in opposition to OpenAI. This move precedes the upcoming US midterms. Public First’s efforts align with Anthropic’s stance regarding responsible AI development and aims to counter the influence of OpenAI-backed political action committees. The donation underscores growing concerns surrounding the rapid advancement of AI and the need for robust governance and oversight, suggesting Anthropic recognizes the importance of shaping the debate surrounding AI regulation and its potential impact on society.</p>
+            
+            
+            <div class="mt-2 flex flex-wrap gap-1">
+              
+              <span onclick="filterByLabel('ai')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                ai
+              </span>
+              
+              <span onclick="filterByLabel('ethics')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                ethics
+              </span>
+              
+              <span onclick="filterByLabel('politics')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                politics
+              </span>
+              
+            </div>
+            
+          </div>
+        </div>
+      </article>
       
       <article class="article-card bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow"
         data-feed="DEV Community"
@@ -2344,6 +2416,70 @@ Maildirは、ファイル競合を防ぎ、並行処理を可能にする効率�
             </div>
             
             
+            
+          </div>
+        </div>
+      </article>
+      
+      <article class="article-card bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow"
+        data-feed="Ars Technica"
+        data-labels="ai,programming,chrome">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span onclick="filterByFeed('Ars Technica')"
+                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 whitespace-nowrap cursor-pointer hover:bg-blue-200">
+                Ars Technica
+              </span>
+              
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                EN→JA
+              </span>
+              
+              <time class="text-xs text-gray-400 whitespace-nowrap" datetime="2026-02-12T03:00:14+00:00">
+                2026-02-12
+              </time>
+            </div>
+            <h2 class="text-base font-semibold text-gray-900">
+              <a href="https://arstechnica.com/google/2026/02/tested-how-chromes-auto-browse-agent-handles-common-web-tasks/" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600 hover:underline">
+                
+                  ChromeのAuto Browseエージェントがウェブを私たちのために閲覧した結果がここにあります。
+                
+              </a>
+            </h2>
+            
+            <p class="text-xs text-gray-400 mt-0.5">We let Chrome&#39;s Auto Browse agent surf the web for us—here&#39;s what happened</p>
+            
+            
+            <div class="mt-2 -mx-5">
+              <img src="https://cdn.arstechnica.net/wp-content/uploads/2026/02/google-automate-windups-1152x648.jpg" alt="" class="w-full h-48 object-cover" loading="lazy"
+                onerror="this.parentElement.style.display='none'">
+            </div>
+            
+            
+            <p class="mt-2 text-sm text-gray-600 leading-relaxed">Googleの新しいAIエージェント「Auto Browse」は、Chromeに組み込まれることで、世界最大のブラウザユーザーに利用可能となりました。初期段階のAIエージェントと同様に、まだ課題も多く、単純なタスクには対応できますが、複雑な処理には不向きです。
+
+記事では、ウェブゲームのプレイやラジオプレイリストの作成といったテストを行い、Auto Browseがゲーム内マウスの操作に苦労したり、指示を文字通りに解釈して作業を停止したりする場面が報告されています。しかし、適切なプロンプトを与えることで、ゲームはプレイでき、ラジオ番組から音楽をYouTube Musicに自動追加することも可能です。Auto Browseは、まだ開発段階であり、安定性や機能面で改善の余地があるものの、AIエージェントとしての可能性を示唆しています。</p>
+            
+            
+            <div class="mt-2 flex flex-wrap gap-1">
+              
+              <span onclick="filterByLabel('ai')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                ai
+              </span>
+              
+              <span onclick="filterByLabel('programming')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                programming
+              </span>
+              
+              <span onclick="filterByLabel('chrome')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                chrome
+              </span>
+              
+            </div>
             
           </div>
         </div>
@@ -4477,7 +4613,7 @@ Maildirは、ファイル競合を防ぎ、並行処理を可能にする効率�
       
       <article class="article-card bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow"
         data-feed="はてなブックマーク - テクノロジー"
-        data-labels="">
+        data-labels="llm,coding,parallelization">
         <div class="flex items-start justify-between gap-3">
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-1 flex-wrap">
@@ -4505,6 +4641,33 @@ Maildirは、ファイル競合を防ぎ、並行処理を可能にする効率�
             </div>
             
             
+            <p class="mt-2 text-sm text-gray-600 leading-relaxed">チームみらいの永田町エンジニアチーム伊藤（エディ）が、選挙支援ツール「みらい動画スタジオ」の開発を通じて、Claude Code Webを10並列で回す超並列LLMコーディングを実現するためのハーネスエンジニアリングを構築した。
+
+主な工夫として、Claude Code Webの登場によるLLM実装コストの低下と、Skillsの登場による定型作業のクオリティ向上が挙げられる。
+
+プロジェクト構成では、機能コンテキスト（BC）単位でディレクトリを分離し、レイヤードアーキテクチャを適用することで、変更ファイルの衝突を回避。AIにとって自明な実装を可能にし、機能追加の並列化を促進した。
+
+並列化の最大のメリットは作業スピードの向上であり、LLMの待機時間をボトルネックとする問題を解決した。この手法は、フルスクラッチ開発、TypeScript + Next + Expressといった技術スタック、1人での開発、エッジケースバグの容認といった前提の下、並列化による開発速度の向上を実現している。</p>
+            
+            
+            <div class="mt-2 flex flex-wrap gap-1">
+              
+              <span onclick="filterByLabel('llm')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                llm
+              </span>
+              
+              <span onclick="filterByLabel('coding')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                coding
+              </span>
+              
+              <span onclick="filterByLabel('parallelization')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                parallelization
+              </span>
+              
+            </div>
             
           </div>
         </div>
@@ -6016,6 +6179,64 @@ Maildirは、ファイル競合を防ぎ、並行処理を可能にする効率�
             </div>
             
             
+            
+          </div>
+        </div>
+      </article>
+      
+      <article class="article-card bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow"
+        data-feed="はてなブックマーク - テクノロジー"
+        data-labels="ai,programming,rentahuman">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <span onclick="filterByFeed('はてなブックマーク - テクノロジー')"
+                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 whitespace-nowrap cursor-pointer hover:bg-blue-200">
+                はてなブックマーク - テクノロジー
+              </span>
+              
+              <time class="text-xs text-gray-400 whitespace-nowrap" datetime="2026-02-11T13:18:37+00:00">
+                2026-02-11
+              </time>
+            </div>
+            <h2 class="text-base font-semibold text-gray-900">
+              <a href="https://jbpress.ismedia.jp/articles/-/93226" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600 hover:underline">
+                
+                  AIが人間を雇うサービス「RentAHuman」が登場、AIが読み取り可能な情報でなければ個人の履歴書は存在しないも同然 【生成AI事件簿】AIにとって、人間は「システム上から直接呼び出すことのできるリソース」に過ぎない | JBpress (ジェイビープレス)
+                
+              </a>
+            </h2>
+            
+            
+            <div class="mt-2 -mx-5">
+              <img src="https://jbpress.ismcdn.jp/mwimgs/8/d/1200mw/img_8dedaf47e416b392ccc733b54a4d44c42833974.png" alt="" class="w-full h-48 object-cover" loading="lazy"
+                onerror="this.parentElement.style.display='none'">
+            </div>
+            
+            
+            <p class="mt-2 text-sm text-gray-600 leading-relaxed">AIが人間を雇うサービス「RentAHuman.ai」が登場し、登録者数が急増している。AIエージェントが物理的なタスクを人間に出向き、報酬を支払うというサービスで、AIが人間を「システム上から直接呼び出すリソース」として利用する形となっている。
+
+従来のギグワークのような側面もあるが、依頼主は人間ではなくAIであり、AIが人間に出すと依頼するという点が特徴だ。現状では約38万人が登録しており、AIが人間の仕事を奪うという従来の構図とは逆転し、AIが人間を「雇用」する側になるという新たな働き方の可能性を示唆している。この現象は、AIの進化と人間の働き方の変化を象徴するものと言える。</p>
+            
+            
+            <div class="mt-2 flex flex-wrap gap-1">
+              
+              <span onclick="filterByLabel('ai')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                ai
+              </span>
+              
+              <span onclick="filterByLabel('programming')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                programming
+              </span>
+              
+              <span onclick="filterByLabel('rentahuman')"
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 cursor-pointer hover:bg-gray-200">
+                rentahuman
+              </span>
+              
+            </div>
             
           </div>
         </div>
