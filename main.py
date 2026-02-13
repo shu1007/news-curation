@@ -307,7 +307,8 @@ def process_articles(new_articles: list[dict], existing_articles: list[dict]) ->
 
         # Fetch full article content from HTML
         content, og_image = fetch_article_content(article["url"])
-        if content:
+        has_content = bool(content)
+        if has_content:
             article["description"] = content
             logging.info(f"    -> 本文取得: OK ({len(content)}字)")
         else:
@@ -323,12 +324,28 @@ def process_articles(new_articles: list[dict], existing_articles: list[dict]) ->
             logging.info(f"    -> 画像: なし")
 
         # Summarize
-        summary = summarize_article(article)
-        article["summary"] = summary
-        if summary:
-            logging.info(f"    -> 要約: OK ({len(article['summary'])}字)")
+        if has_content:
+            # HTML本文が取得できた場合はOllamaで要約
+            summary = summarize_article(article)
+            article["summary"] = summary
+            if summary:
+                logging.info(f"    -> 要約: OK ({len(article['summary'])}字)")
+            else:
+                logging.info(f"    -> 要約: スキップ")
         else:
-            logging.info(f"    -> 要約: スキップ")
+            # HTML本文が取得できない場合はRSSのdescriptionを翻訳してsummaryとする
+            desc = article.get("description", "")
+            if desc:
+                if article["is_english"]:
+                    translated = translate_to_japanese(desc)
+                    article["summary"] = translated if translated else desc
+                    logging.info(f"    -> 要約: RSS概要を翻訳 ({len(article['summary'])}字)")
+                else:
+                    article["summary"] = desc
+                    logging.info(f"    -> 要約: RSS概要をそのまま使用 ({len(desc)}字)")
+            else:
+                article["summary"] = ""
+                logging.info(f"    -> 要約: スキップ(RSS概要なし)")
 
         # Translate English articles
         if article["is_english"] and article["title"]:
@@ -413,7 +430,18 @@ def render_html(articles: list[dict]) -> None:
 
 
 def main():
+    render_only = "--render" in sys.argv
+
     setup_logging()
+
+    if render_only:
+        logging.info("=== HTML Render Only ===")
+        articles = load_existing_articles()
+        logging.info(f"Loaded {len(articles)} articles from {ARTICLES_FILE}")
+        render_html(articles)
+        logging.info("\nDone!")
+        return
+
     logging.info("=== RSS Feed Aggregator ===")
 
     # Load feeds
