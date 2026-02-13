@@ -26,7 +26,7 @@ git pull --ff-only origin "$BRANCH" || true
 # Ensure Ollama is running
 if ! curl -sf http://localhost:11434/api/tags >/dev/null 2>&1; then
   echo "Ollama is not running. Starting Ollama..."
-  ollama serve &
+  /opt/homebrew/bin/ollama serve &
   # Wait for Ollama to be ready
   for i in $(seq 1 30); do
     if curl -sf http://localhost:11434/api/tags >/dev/null 2>&1; then
@@ -58,3 +58,5 @@ else
 fi
 
 echo "=== publish.sh finished at $(date) ==="
+
+pkill /opt/homebrew/bin/ollama
