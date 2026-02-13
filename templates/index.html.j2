@@ -92,7 +92,7 @@
             {% endif %}
             {% if article.image_url %}
             <div class="mt-2 -mx-5">
-              <img src="{{ article.image_url }}" alt="" class="w-full h-48 object-cover" loading="lazy"
+              <img src="{{ article.image_url }}" alt="" class="w-full max-h-80 object-contain bg-gray-100" loading="lazy"
                 onerror="this.parentElement.style.display='none'">
             </div>
             {% endif %}

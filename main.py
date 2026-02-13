@@ -430,7 +430,18 @@ def render_html(articles: list[dict]) -> None:
 
 
 def main():
+    render_only = "--render" in sys.argv
+
     setup_logging()
+
+    if render_only:
+        logging.info("=== HTML Render Only ===")
+        articles = load_existing_articles()
+        logging.info(f"Loaded {len(articles)} articles from {ARTICLES_FILE}")
+        render_html(articles)
+        logging.info("\nDone!")
+        return
+
     logging.info("=== RSS Feed Aggregator ===")
 
     # Load feeds
