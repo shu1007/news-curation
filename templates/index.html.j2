@@ -45,12 +45,12 @@
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-700 text-white cursor-pointer mr-1 mb-1">
             All
           </button>
-          {% for label in all_labels %}
+          {% for label in all_labels[:25] %}
           <button onclick="filterByLabel('{{ label }}')" data-label-btn="{{ label }}"
             class="filter-label-btn inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer mr-1 mb-1">
             {{ label }}
           </button>
-          {% endfor %}
+          {% endfor %} ...
         </div>
       </div>
     </div>
