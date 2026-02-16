@@ -72,60 +72,58 @@
         data-url="{{ article.url }}"
         data-title="{{ article.title_ja if (article.is_english and article.title_ja) else article.title }}"
         data-image="{{ article.image_url or '' }}">
-        <div class="flex items-start justify-between gap-3">
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 mb-1 flex-wrap">
-              <span onclick="filterByFeed('{{ article.feed_name }}')"
-                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cyan-900/50 text-cyan-400 whitespace-nowrap cursor-pointer hover:bg-cyan-900/80">
-                {{ article.feed_name }}
-              </span>
-              {% if article.is_english %}
-              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-900/50 text-emerald-400">
-                EN→JA
-              </span>
-              {% endif %}
-              <time class="text-xs text-gray-500 whitespace-nowrap" datetime="{{ article.published }}">
-                {{ article.published[:10] }}
-              </time>
-            </div>
-            <h2 class="text-base font-semibold text-gray-100">
-              <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
-                {% if article.is_english and article.title_ja %}
-                  {{ article.title_ja }}
-                {% else %}
-                  {{ article.title }}
-                {% endif %}
-              </a>
-            </h2>
-            {% if article.is_english and article.title_ja %}
-            <p class="text-xs text-gray-500 mt-0.5">{{ article.title }}</p>
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span onclick="filterByFeed('{{ article.feed_name }}')"
+              class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cyan-900/50 text-cyan-400 whitespace-nowrap cursor-pointer hover:bg-cyan-900/80">
+              {{ article.feed_name }}
+            </span>
+            {% if article.is_english %}
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-900/50 text-emerald-400">
+              EN→JA
+            </span>
             {% endif %}
-            {% if article.image_url %}
-            <div class="mt-3 -mx-5 overflow-hidden">
-              <img src="{{ article.image_url }}" alt="" class="w-full max-h-80 object-contain bg-gray-800" loading="lazy"
-                onerror="this.parentElement.style.display='none'">
-            </div>
-            {% endif %}
-            {% if article.summary %}
-            <p class="mt-2 text-sm text-gray-400 leading-relaxed">{{ article.summary }}</p>
-            {% endif %}
-            {% if article.labels %}
-            <div class="mt-2 flex flex-wrap gap-1">
-              {% for label in article.labels %}
-              <span onclick="filterByLabel('{{ label }}')"
-                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-gray-500 cursor-pointer hover:bg-gray-700 hover:text-gray-300">
-                {{ label }}
-              </span>
-              {% endfor %}
-            </div>
-            {% endif %}
+            <time class="text-xs text-gray-500 whitespace-nowrap" datetime="{{ article.published }}">
+              {{ article.published[:10] }}
+            </time>
           </div>
           <button onclick="toggleBookmark(this)" data-url="{{ article.url }}"
-            class="bookmark-btn flex-shrink-0 p-1.5 rounded-md text-gray-600 hover:text-amber-400 transition-colors"
+            class="bookmark-btn flex-shrink-0 p-1 rounded text-gray-600 hover:text-amber-400 transition-colors"
             title="Bookmark">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
           </button>
         </div>
+        <h2 class="text-base font-semibold text-gray-100">
+          <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">
+            {% if article.is_english and article.title_ja %}
+              {{ article.title_ja }}
+            {% else %}
+              {{ article.title }}
+            {% endif %}
+          </a>
+        </h2>
+        {% if article.is_english and article.title_ja %}
+        <p class="text-xs text-gray-500 mt-0.5">{{ article.title }}</p>
+        {% endif %}
+        {% if article.image_url %}
+        <div class="mt-3 -mx-5 overflow-hidden">
+          <img src="{{ article.image_url }}" alt="" class="w-full max-h-80 object-contain bg-gray-800" loading="lazy"
+            onerror="this.parentElement.style.display='none'">
+        </div>
+        {% endif %}
+        {% if article.summary %}
+        <p class="mt-2 text-sm text-gray-400 leading-relaxed">{{ article.summary }}</p>
+        {% endif %}
+        {% if article.labels %}
+        <div class="mt-2 flex flex-wrap gap-1">
+          {% for label in article.labels %}
+          <span onclick="filterByLabel('{{ label }}')"
+            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-gray-500 cursor-pointer hover:bg-gray-700 hover:text-gray-300">
+            {{ label }}
+          </span>
+          {% endfor %}
+        </div>
+        {% endif %}
       </article>
       {% endfor %}
     </div>
@@ -221,19 +219,17 @@
           ? `<div class="mt-3 -mx-5 overflow-hidden"><img src="${escapeHtml(b.image_url)}" alt="" class="w-full max-h-80 object-contain bg-gray-800" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
           : '';
         return `<div class="bg-gray-900 rounded-lg border border-gray-800 p-5">
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex-1 min-w-0">
-              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cyan-900/50 text-cyan-400 mb-1">${escapeHtml(b.feed_name)}</span>
-              <h2 class="text-base font-semibold text-gray-100">
-                <a href="${escapeHtml(b.url)}" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">${escapeHtml(b.title)}</a>
-              </h2>
-              ${imgHtml}
-            </div>
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-cyan-900/50 text-cyan-400">${escapeHtml(b.feed_name)}</span>
             <button onclick="removeBookmark('${escapeHtml(b.url)}')"
-              class="flex-shrink-0 p-1.5 rounded-md text-amber-400 hover:text-red-400 transition-colors" title="Remove">
-              <svg class="w-5 h-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              class="flex-shrink-0 p-1 rounded text-amber-400 hover:text-red-400 transition-colors" title="Remove">
+              <svg class="w-4 h-4" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
             </button>
           </div>
+          <h2 class="text-base font-semibold text-gray-100">
+            <a href="${escapeHtml(b.url)}" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors">${escapeHtml(b.title)}</a>
+          </h2>
+          ${imgHtml}
         </div>`;
       }).join('');
     }
