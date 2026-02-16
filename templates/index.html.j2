@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tech Pulse</title>
+  <title>TLDR;</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-950 min-h-screen text-gray-100">
   <header class="border-b border-gray-800">
     <div class="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-white">Tech Pulse</h1>
+        <h1 class="text-2xl font-bold tracking-tight text-white">TLDR;</h1>
         <p class="mt-1 text-sm text-gray-500">{{ updated_at }} / <span id="visible-count">{{ total_count }}</span> / {{ total_count }} articles</p>
       </div>
       <button onclick="toggleBookmarkView()" id="bookmark-filter-btn"
@@ -149,7 +149,7 @@
     let activeLabel = '';
     let showingBookmarks = false;
 
-    const BOOKMARK_KEY = 'techpulse_bookmarks';
+    const BOOKMARK_KEY = 'tldr_bookmarks';
 
     function getBookmarks() {
       try { return JSON.parse(localStorage.getItem(BOOKMARK_KEY)) || []; }
