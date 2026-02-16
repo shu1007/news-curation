@@ -26,6 +26,7 @@ OLLAMA_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL = "gemma3:4b"
 RETENTION_DAYS = 7
 LOG_DIR = BASE_DIR / "logs"
+JST = timezone(timedelta(hours=9))
 
 
 def setup_logging() -> None:
@@ -157,7 +158,7 @@ def fetch_feed_articles(feed: dict, cutoff: datetime) -> list[dict]:
                 "title": title,
                 "title_ja": "",
                 "url": url,
-                "published": published.isoformat(),
+                "published": published.astimezone(JST).isoformat(),
                 "summary": "",
                 "description": description[:1000],
                 "is_english": not is_japanese(title),
@@ -418,7 +419,7 @@ def render_html(articles: list[dict]) -> None:
 
     html = template.render(
         articles=sorted_articles,
-        updated_at=datetime.now(tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+        updated_at=datetime.now(tz=JST).strftime("%Y-%m-%d %H:%M JST"),
         total_count=len(sorted_articles),
         feed_names=seen_feeds,
         all_labels=all_labels,
