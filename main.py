@@ -190,7 +190,11 @@ def fetch_article_content(url: str) -> tuple[str, str]:
         logging.info(f"    -> 本文取得: 失敗({e.__class__.__name__})")
         return "", ""
 
-    soup = BeautifulSoup(resp.content, "html.parser")
+    try:
+        soup = BeautifulSoup(resp.content, "html.parser")
+    except Exception as e:
+        logging.info(f"    -> 本文取得: 失敗(HTML解析エラー: {e.__class__.__name__})")
+        return "", ""
 
     # Extract og:image before decomposing elements
     og_image = ""
@@ -306,68 +310,72 @@ def process_articles(new_articles: list[dict], existing_articles: list[dict]) ->
         label = "EN" if article["is_english"] else "JA"
         logging.info(f"  [{i}/{total}] [{label}] {article['title'][:60]}")
 
-        # Fetch full article content from HTML
-        content, og_image = fetch_article_content(article["url"])
-        has_content = bool(content)
-        if has_content:
-            article["description"] = content
-            logging.info(f"    -> 本文取得: OK ({len(content)}字)")
-        else:
-            logging.info(f"    -> 本文取得: フォールバック(RSS概要を使用)")
-
-        # Use og:image as fallback if no RSS image
-        if not article.get("image_url") and og_image:
-            article["image_url"] = og_image
-            logging.info(f"    -> 画像: og:image取得")
-        elif article.get("image_url"):
-            logging.info(f"    -> 画像: RSS取得")
-        else:
-            logging.info(f"    -> 画像: なし")
-
-        # Summarize
-        if has_content:
-            # HTML本文が取得できた場合はOllamaで要約
-            summary = summarize_article(article)
-            article["summary"] = summary
-            if summary:
-                logging.info(f"    -> 要約: OK ({len(article['summary'])}字)")
+        try:
+            # Fetch full article content from HTML
+            content, og_image = fetch_article_content(article["url"])
+            has_content = bool(content)
+            if has_content:
+                article["description"] = content
+                logging.info(f"    -> 本文取得: OK ({len(content)}字)")
             else:
-                logging.info(f"    -> 要約: スキップ")
-        else:
-            # HTML本文が取得できない場合はRSSのdescriptionを翻訳してsummaryとする
-            desc = article.get("description", "")
-            if desc:
-                if article["is_english"]:
-                    translated = translate_to_japanese(desc)
-                    article["summary"] = translated if translated else desc
-                    logging.info(f"    -> 要約: RSS概要を翻訳 ({len(article['summary'])}字)")
+                logging.info(f"    -> 本文取得: フォールバック(RSS概要を使用)")
+
+            # Use og:image as fallback if no RSS image
+            if not article.get("image_url") and og_image:
+                article["image_url"] = og_image
+                logging.info(f"    -> 画像: og:image取得")
+            elif article.get("image_url"):
+                logging.info(f"    -> 画像: RSS取得")
+            else:
+                logging.info(f"    -> 画像: なし")
+
+            # Summarize
+            if has_content:
+                # HTML本文が取得できた場合はOllamaで要約
+                summary = summarize_article(article)
+                article["summary"] = summary
+                if summary:
+                    logging.info(f"    -> 要約: OK ({len(article['summary'])}字)")
                 else:
-                    article["summary"] = desc
-                    logging.info(f"    -> 要約: RSS概要をそのまま使用 ({len(desc)}字)")
+                    logging.info(f"    -> 要約: スキップ")
             else:
-                article["summary"] = ""
-                logging.info(f"    -> 要約: スキップ(RSS概要なし)")
+                # HTML本文が取得できない場合はRSSのdescriptionを翻訳してsummaryとする
+                desc = article.get("description", "")
+                if desc:
+                    if article["is_english"]:
+                        translated = translate_to_japanese(desc)
+                        article["summary"] = translated if translated else desc
+                        logging.info(f"    -> 要約: RSS概要を翻訳 ({len(article['summary'])}字)")
+                    else:
+                        article["summary"] = desc
+                        logging.info(f"    -> 要約: RSS概要をそのまま使用 ({len(desc)}字)")
+                else:
+                    article["summary"] = ""
+                    logging.info(f"    -> 要約: スキップ(RSS概要なし)")
 
-        # Translate English articles
-        if article["is_english"] and article["title"]:
-            title_ja = translate_to_japanese(article["title"])
-            article["title_ja"] = title_ja if title_ja else article["title"]
-            if title_ja:
-                logging.info(f"    -> 翻訳: OK — {article['title_ja'][:40]}")
+            # Translate English articles
+            if article["is_english"] and article["title"]:
+                title_ja = translate_to_japanese(article["title"])
+                article["title_ja"] = title_ja if title_ja else article["title"]
+                if title_ja:
+                    logging.info(f"    -> 翻訳: OK — {article['title_ja'][:40]}")
+                else:
+                    logging.info(f"    -> 翻訳: スキップ")
             else:
-                logging.info(f"    -> 翻訳: スキップ")
-        else:
-            article["title_ja"] = article["title"]
+                article["title_ja"] = article["title"]
 
-        # Generate labels
-        labels = generate_labels(article)
-        article["labels"] = labels
-        if labels:
-            logging.info(f"    -> ラベル: {', '.join(labels)}")
-        else:
-            logging.info(f"    -> ラベル: スキップ")
+            # Generate labels
+            labels = generate_labels(article)
+            article["labels"] = labels
+            if labels:
+                logging.info(f"    -> ラベル: {', '.join(labels)}")
+            else:
+                logging.info(f"    -> ラベル: スキップ")
 
-        processed.append(article)
+            processed.append(article)
+        except Exception as e:
+            logging.warning(f"    -> スキップ(エラー: {e.__class__.__name__}: {e})")
+            continue
 
         # Save progress every 5 articles
         if i % 5 == 0:
