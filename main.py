@@ -23,7 +23,7 @@ OUTPUT_FILE = BASE_DIR / "docs" / "index.html"
 TEMPLATES_DIR = BASE_DIR / "templates"
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "gemma3:4b"
+OLLAMA_MODEL = "qwen2.5:7b-instruct"
 RETENTION_DAYS = 7
 LOG_DIR = BASE_DIR / "logs"
 JST = timezone(timedelta(hours=9))
