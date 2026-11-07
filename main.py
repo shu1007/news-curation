@@ -22,8 +22,12 @@ ARTICLES_FILE = BASE_DIR / "data" / "articles.json"
 OUTPUT_FILE = BASE_DIR / "docs" / "index.html"
 TEMPLATES_DIR = BASE_DIR / "templates"
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "qwen2.5:7b-instruct"
+OLLAMA_CHAT_URL = "http://localhost:11434/api/chat"
+# 要約: 日本語直接要約（軽量・高速）
+SUMMARY_MODEL = "qwen3.5:4b"
+# 翻訳: 翻訳特化モデル（Ollama 0.40 以降で GGUF を利用）
+TRANSLATE_MODEL = "hf.co/pfnet/plamo-3-translate-0.8b-GGUF:Q4_K_M"
+SUMMARY_INPUT_MAX_CHARS = 1500
 RETENTION_DAYS = 7
 LOG_DIR = BASE_DIR / "logs"
 JST = timezone(timedelta(hours=9))
@@ -223,16 +227,20 @@ def fetch_article_content(url: str) -> tuple[str, str]:
     return text[:CONTENT_MAX_CHARS], og_image
 
 
-def call_ollama(prompt: str) -> str:
-    """Call Ollama API and return generated text."""
+def call_ollama(prompt: str, model: str = SUMMARY_MODEL, think: bool | None = None) -> str:
+    """Call Ollama chat API with a single user message and return generated text."""
+    body = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "stream": False,
+        "options": {"temperature": 0, "num_predict": 512},
+    }
+    if think is not None:
+        body["think"] = think  # qwen3.5 などの思考モードを無効化する
     try:
-        resp = requests.post(
-            OLLAMA_URL,
-            json={"model": OLLAMA_MODEL, "prompt": prompt, "stream": False},
-            timeout=120,
-        )
+        resp = requests.post(OLLAMA_CHAT_URL, json=body, timeout=120)
         resp.raise_for_status()
-        return resp.json().get("response", "").strip()
+        return resp.json().get("message", {}).get("content", "").strip()
     except requests.exceptions.ConnectionError:
         logging.warning("Ollama is not running. Skipping LLM summarization.")
         return ""
@@ -244,7 +252,7 @@ def call_ollama(prompt: str) -> str:
 def summarize_article(article: dict) -> str:
     """Generate a Japanese summary of an article using Ollama."""
     title = article["title"]
-    desc = article.get("description", "")
+    desc = article.get("description", "")[:SUMMARY_INPUT_MAX_CHARS]
     content = f"タイトル: {title}\n内容: {desc}" if desc else f"タイトル: {title}"
 
     prompt = (
@@ -255,7 +263,7 @@ def summarize_article(article: dict) -> str:
         "- 要約のみを出力（前置きや補足は不要）\n\n"
         f"{content}"
     )
-    return call_ollama(prompt)
+    return call_ollama(prompt, model=SUMMARY_MODEL, think=False)
 
 
 def generate_labels(article: dict) -> list[str]:
@@ -272,7 +280,7 @@ def generate_labels(article: dict) -> list[str]:
         "- ラベルのみを出力（前置きや説明は不要）\n\n"
         f"タイトル: {title}\n要約: {summary}"
     )
-    result = call_ollama(prompt)
+    result = call_ollama(prompt, model=SUMMARY_MODEL, think=False)
     if not result:
         return []
     # Parse comma-separated labels, clean up
@@ -282,12 +290,11 @@ def generate_labels(article: dict) -> list[str]:
 
 
 def translate_to_japanese(text: str) -> str:
-    """Translate English text to Japanese using Ollama."""
-    prompt = (
-        "以下の英語テキストを自然な日本語に翻訳してください。翻訳のみを出力してください。\n\n"
-        f"{text}"
-    )
-    return call_ollama(prompt)
+    """Translate English text to Japanese using PLaMo (translation-specialized model).
+
+    PLaMo は翻訳専用のため、指示文は付けず原文のみを user メッセージとして送る。
+    """
+    return call_ollama(text, model=TRANSLATE_MODEL)
 
 
 def _save_progress(articles: list[dict]) -> None:
