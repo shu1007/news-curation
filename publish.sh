@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 BRANCH="published"
-PYTHON="/opt/homebrew/bin/python3"
+PYTHON="$HOME/.venvs/news-curation/bin/python"
 LOG_FILE="$REPO_DIR/logs/publish_$(date +%Y%m%d_%H%M%S).log"
 
 mkdir -p "$REPO_DIR/logs"
